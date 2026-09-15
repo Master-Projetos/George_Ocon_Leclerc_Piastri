@@ -31,6 +31,8 @@ cols_numericas = [
     "Quantidade equip.", "Quantidade portas", "Portas ocupadas",
     "Portas livres", "Total portas reservadas", "Portas atendimento cliente",
 ]
+df = df.dropna(subset=cols_numericas, how="all")
+
 df[cols_numericas] = df[cols_numericas].fillna(0)
 ceo[cols_numericas] = ceo[cols_numericas].fillna(0)
 
@@ -78,4 +80,15 @@ print(f"Validação total (CTO + CEO == raw): {validacao_total}")
 
 with open("output/results.json", "w", encoding="utf-8") as f:
     json.dump(resultado, f, ensure_ascii=False, indent=2)
+
+# %%
+table = ctos[[
+    "Sigla", "Latitude", "Longitude", "Cidade", "Estado",
+    "Quantidade equip.", "Quantidade portas", "Portas ocupadas",
+    "Portas livres", "Total portas reservadas", "Portas bloqueadas", 
+    "Portas atendimento cliente",
+    "Tipo",
+]].copy()
+
+table.to_excel("output/ctos.xlsx", index=False)
 # %%
