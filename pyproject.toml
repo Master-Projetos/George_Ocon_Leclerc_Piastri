@@ -1,15 +1,16 @@
 [project]
 name = "geogrid"
-version = "0.1.0"
+version = "0.2.0"
 description = "PASTOR MALDONADO"
 authors = [
     {name = "Eduardo",email = "eduardo.vchaves23@gmail.com"}
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.13,<4.0"
 dependencies = [
     "requests (>=2.32.0,<3.0.0)",
     "pandas (>=3.0.5,<4.0.0)",
-    "fastapi[standard] (>=0.141.1,<0.142.0)"
+    "fastapi[standard] (>=0.141.1,<0.142.0)",
+    "slowapi (>=0.1.10,<0.2.0)"
 ]
 
 [tool.poetry]

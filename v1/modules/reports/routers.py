@@ -1,4 +1,5 @@
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
+from core.limiter import limiter
 from core.constants import ALLOWED_RELATORIES
 from .service import (
     run_export,
@@ -10,9 +11,9 @@ from .schemas import ReportSchema
 
 router = APIRouter(tags=["Relatorio"])
 
-
 @router.get("/{relatory}/status")
-def get_export_status(relatory: str):
+@limiter.limit("200/minute")
+def get_export_status(request: Request, relatory: str):
     status = export_status.get(relatory)
     if not status:
         raise HTTPException(status_code=404, detail="No export found for the relatory")
@@ -20,7 +21,8 @@ def get_export_status(relatory: str):
 
 
 @router.post("/{relatory}", response_model=ReportSchema)
-def request_export(relatory: str, background_tasks: BackgroundTasks):
+@limiter.limit("2/minute")
+def request_export(request: Request, relatory: str, background_tasks: BackgroundTasks):
     if relatory not in ALLOWED_RELATORIES:
         raise HTTPException(status_code=400, detail="Relatory not supported")
     
@@ -32,7 +34,8 @@ def request_export(relatory: str, background_tasks: BackgroundTasks):
 
 
 @router.get("/viability")
-def get_data():
+@limiter.limit("10/minute")
+def get_data(request: Request):
     viability_json = treat_viabilidade()
     if viability_json is None:
         raise HTTPException(status_code=400, detail="Relatory has not find")
